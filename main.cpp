@@ -8,6 +8,11 @@
 #define UNICODE
 #endif
 
+#ifdef NULL
+#undef NULL
+#define NULL nullptr
+#endif
+
 
 #define HANDLE_ERROR(fn) \
   switch (dwResult) { \
@@ -35,7 +40,7 @@ std::pair<HANDLE, GUID> select_interface();
 
 void scan(HANDLE, GUID);
 
-int main() {
+[[ noreturn ]] int main() {
   std::ios::sync_with_stdio(false);
 
   SetConsoleOutputCP(CP_UTF8);
@@ -45,8 +50,6 @@ int main() {
     scan(hClientHandle, guid);
     Sleep(1000);
   }
-
-  return 0;
 }
 
 std::pair<HANDLE, GUID> select_interface() {
