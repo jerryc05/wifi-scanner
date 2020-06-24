@@ -183,17 +183,21 @@ void scan(HANDLE hClientHandle, GUID chosen_guid) {
     for (DWORD i = 0; i < pAvailableNetworkList->dwNumberOfItems; i++) {
       auto pBssEntry = &pAvailableNetworkList->Network[i];
 
-      std::string ssid;
+      // SSID
+      std::string ssid(
+              reinterpret_cast<char *>(pBssEntry->dot11Ssid.ucSSID),
+              pBssEntry->dot11Ssid.uSSIDLength);
       {
-        for (DWORD j = 0; j < pBssEntry->dot11Ssid.uSSIDLength
-                && pBssEntry->dot11Ssid.ucSSID[j]; j++)
-          ssid += static_cast<char> ( pBssEntry->dot11Ssid.ucSSID[j]);
-
-        if (ssid.empty())
-          ssid = "<hidden-ssid>";
+        if (ssid.empty() || ssid[0] == 0)
+          ssid = "<unknown-ssid>";
       }
 
-      wlans.emplace_back(std::move(ssid), pBssEntry->wlanSignalQuality);
+      // Add to vector if no duplicate
+      {
+//      for (const auto& x:wlans)
+//        if x.first
+        wlans.emplace_back(std::move(ssid), pBssEntry->wlanSignalQuality);
+      }
     }
 
     std::sort(wlans.begin(), wlans.end(),
