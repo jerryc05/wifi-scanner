@@ -38,6 +38,8 @@ void scan(HANDLE, GUID);
 int main() {
   std::ios::sync_with_stdio(false);
 
+  SetConsoleOutputCP(CP_UTF8);
+
   auto[hClientHandle, guid] = select_interface();
   for (;;) {
     scan(hClientHandle, guid);
